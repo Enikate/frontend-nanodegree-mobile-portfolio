@@ -15,7 +15,7 @@ Google analitycs and perfmatters chenge to async
 Mostly used png for files with reduced number of colors
 print.css made so its used just for printing (media=print)
 
-To browse simply use: 
+To browse simply use: http://enikate.github.io/frontend-nanodegree-mobile-portfolio/
 
 ####Part 2: Optimize Frames per Second in pizza.html
 
