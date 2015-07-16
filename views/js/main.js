@@ -450,10 +450,17 @@ var resizePizzas = function(size) {
 
   // Iterates through pizza elements on the page and changes their widths
   function changePizzaSizes(size) {
-    for (var i = 0; i < document.querySelectorAll(".randomPizzaContainer").length; i++) {
-      var dx = determineDx(document.querySelectorAll(".randomPizzaContainer")[i], size);
-      var newwidth = (document.querySelectorAll(".randomPizzaContainer")[i].offsetWidth + dx) + 'px';
-      document.querySelectorAll(".randomPizzaContainer")[i].style.width = newwidth;
+
+    // Get all items with class "randomPizzaContainer"
+    var items = document.getElementsByClassName('randomPizzaContainer');
+
+    // Calculate new width based on first element from the array
+    var dx = determineDx(items[0], size);
+    var newwidth = (items[0].offsetWidth + dx) + 'px';
+
+    // Apply new width on all elements
+    for (var i = 0; i < items.length; i++) {
+      items[i].style.width = newwidth;
     }
   }
 
@@ -502,9 +509,23 @@ function updatePositions() {
   frame++;
   window.performance.mark("mark_start_frame");
 
-  var items = document.querySelectorAll('.mover');
+  // var items = document.querySelectorAll('.mover');
+  // Get element by class used to improve selections
+  var items = document.getElementsByClassName('mover');
+  
+  // Scroll phases calculation done outside loop and storred in array.
+  var scrollTopValue = document.body.scrollTop / 1250;
+  var scrollPhases = [ Math.sin(scrollTopValue + 0),
+                        Math.sin(scrollTopValue + 1),
+                        Math.sin(scrollTopValue + 2),
+                        Math.sin(scrollTopValue + 3),
+                        Math.sin(scrollTopValue + 4)];
+
   for (var i = 0; i < items.length; i++) {
-    var phase = Math.sin((document.body.scrollTop / 1250) + (i % 5));
+
+    // Get ready value insted of calculating in the loop
+    var phase = scrollPhases[i % 5];
+
     items[i].style.left = items[i].basicLeft + 100 * phase + 'px';
   }
 
@@ -525,6 +546,10 @@ window.addEventListener('scroll', updatePositions);
 document.addEventListener('DOMContentLoaded', function() {
   var cols = 8;
   var s = 256;
+
+  // Add fragment to not write to DOM many times
+  var fragment = document.createDocumentFragment();
+
   for (var i = 0; i < 200; i++) {
     var elem = document.createElement('img');
     elem.className = 'mover';
@@ -533,7 +558,11 @@ document.addEventListener('DOMContentLoaded', function() {
     elem.style.width = "73.333px";
     elem.basicLeft = (i % cols) * s;
     elem.style.top = (Math.floor(i / cols) * s) + 'px';
-    document.querySelector("#movingPizzas1").appendChild(elem);
+    fragment.appendChild(elem);
   }
+
+  // append created fragment
+  document.querySelector("#movingPizzas1").appendChild(fragment);
+
   updatePositions();
 });
