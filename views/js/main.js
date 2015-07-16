@@ -1,3 +1,5 @@
+"use strict";
+
 /*
 Welcome to the 60fps project! Your goal is to make Cam's Pizzeria website run
 jank-free at 60 frames per second.
@@ -406,13 +408,13 @@ var resizePizzas = function(size) {
   function changeSliderLabel(size) {
     switch(size) {
       case "1":
-        document.querySelector("#pizzaSize").innerHTML = "Small";
+        document.getElementById("pizzaSize").innerHTML = "Small";
         return;
       case "2":
-        document.querySelector("#pizzaSize").innerHTML = "Medium";
+        document.getElementById("pizzaSize").innerHTML = "Medium";
         return;
       case "3":
-        document.querySelector("#pizzaSize").innerHTML = "Large";
+        document.getElementById("pizzaSize").innerHTML = "Large";
         return;
       default:
         console.log("bug in changeSliderLabel");
@@ -459,7 +461,8 @@ var resizePizzas = function(size) {
     var newwidth = (items[0].offsetWidth + dx) + 'px';
 
     // Apply new width on all elements
-    for (var i = 0; i < items.length; i++) {
+    var l = items.length;
+    for (var i = 0; i < l; i++) {
       items[i].style.width = newwidth;
     }
   }
@@ -476,8 +479,9 @@ var resizePizzas = function(size) {
 window.performance.mark("mark_start_generating"); // collect timing data
 
 // This for-loop actually creates and appends all of the pizzas when the page loads
-for (var i = 2; i < 100; i++) {
-  var pizzasDiv = document.getElementById("randomPizzas");
+var pizzasDiv = document.getElementById("randomPizzas");
+
+for (var i = 2; i < 100; i++) {  
   pizzasDiv.appendChild(pizzaElementGenerator(i));
 }
 
@@ -520,11 +524,12 @@ function updatePositions() {
                         Math.sin(scrollTopValue + 2),
                         Math.sin(scrollTopValue + 3),
                         Math.sin(scrollTopValue + 4)];
+  var phase;
 
   for (var i = 0; i < items.length; i++) {
 
     // Get ready value insted of calculating in the loop
-    var phase = scrollPhases[i % 5];
+    phase = scrollPhases[i % 5];
 
     items[i].style.left = items[i].basicLeft + 100 * phase + 'px';
   }
@@ -550,8 +555,12 @@ document.addEventListener('DOMContentLoaded', function() {
   // Add fragment to not write to DOM many times
   var fragment = document.createDocumentFragment();
 
-  for (var i = 0; i < 200; i++) {
-    var elem = document.createElement('img');
+  // Calculate how many pizzas are needed.
+  var pizzasNumber = (window.screen.height/s) * cols;
+  var elem;
+
+  for (var i = 0; i < pizzasNumber; i++) {
+    elem = document.createElement('img');
     elem.className = 'mover';
     elem.src = "images/pizza.png";
     elem.style.height = "100px";
